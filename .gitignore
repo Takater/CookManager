@@ -2,9 +2,13 @@
 
 # dependencies
 node_modules
+__pycache__
 
 # production
 build
+
+#
+*.sqlite3
 
 # misc
 .DS_Store
