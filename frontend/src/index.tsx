@@ -14,6 +14,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />
   },
+  {
+    path: "sobre",
+    element: <h1>TODO</h1>
+  }
 ])
 
 root.render(
