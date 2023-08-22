@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { loadModulesList } from './support';
+import { ModulesList, loadModulesList } from './support';
 
-interface APIRes{
-  code: number;
-  method: string;
-  message: string;
-}
 function App() {
 
   const [loading, setLoading] = useState(true);
@@ -15,9 +10,8 @@ function App() {
 
   useEffect(() => {
     if(lista) {
-      console.log(lista)
       setLoading(false);
-    } else {
+    } else if (loading) {
       loadModulesList(setLista)
     }
 
@@ -27,9 +21,15 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          {loading ? <>Edit <code>src/App.tsx</code> and save to reload.</> : <>{(lista as APIRes).message}</>}
-        </p>
+        {loading ? <>Carregando...</> : 
+          <>
+            {(lista as ModulesList).modules.map(((module, index) => 
+              {
+                return <p key={module.name}>{module.name}</p>
+              }
+            ))}
+          </>
+        }
         <a
           className="App-link"
           href="https://reactjs.org"

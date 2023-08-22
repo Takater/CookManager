@@ -9,6 +9,7 @@ build
 
 #
 *.sqlite3
+migrations
 
 # misc
 .DS_Store

@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-import cookmanager.controller as controller
+import cookmanager.controller as ctrl
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('stock/', controller.stock),
+    path('stock/', ctrl.stock),
+    path('loadmodules/', ctrl.loadmodules)
 ]

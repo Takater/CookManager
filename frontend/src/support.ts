@@ -1,5 +1,14 @@
 // Backend endpoints
-const modulesEndpoint = 'http://localhost:8000/stock'
+const modulesEndpoint = 'http://localhost:8000/loadmodules'
+
+interface Module {
+    id: number;
+    name: string;
+}
+
+export interface ModulesList {
+    'modules': Array<Module>
+}
 
 export async function loadModulesList (setList: Function) {
 
