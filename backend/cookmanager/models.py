@@ -30,6 +30,8 @@ class BaseUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=11)
     password = models.CharField(max_length=128)
+    token = models.CharField(max_length=128)
+    is_staff = models.BooleanField(default=False)
     permissions = models.ManyToManyField(Permission)
 
     objects = CustomManager()
@@ -42,4 +44,5 @@ class BaseUser(AbstractBaseUser):
     
 class StaffUser(BaseUser):
     staff_id = models.CharField(unique=True, max_length=128)
+    is_staff = True
 
