@@ -1,6 +1,7 @@
 // Backend endpoints
-const modulesEndpoint = 'http://localhost:8000/loadmodules'
-const loginEndpoint = 'http://localhost:8000/login'
+const baseUrl = "http://localhost:8000/"
+const modulesEndpoint = baseUrl + "loadmodules"
+const loginEndpoint = baseUrl + "login"
 
 // Modules
 interface Module {
@@ -9,7 +10,7 @@ interface Module {
 }
 
 export interface ModulesList {
-    'modules': Array<Module>
+    "modules": Array<Module>
 }
 
 export async function loadModulesList (setList: Function) {
@@ -20,28 +21,57 @@ export async function loadModulesList (setList: Function) {
 }
 
 // User
-interface User {
-    name: string;
-    phone: string;
-    perms: Array<string>;
-    staff: boolean;
-    token: string;
+export interface User {
+    code: number;
+    user: {
+        name: string;
+        phone: string;
+        perms: Array<string>;
+        staff: boolean;
+        token: string;
+    }
 }
 
-interface UserError {
+export interface UserError {
     code: number;
     message: string;
 }
 
-export async function logUser(username: string | undefined, password: string | undefined, token: string | undefined) {
+export async function logUser(username?: string, password?: string, token?: string, keeplogged?: boolean) {
+
+    const api_headers = {"username": "", "password": "", "cookmanager-user-token": "", "keep-logged": keeplogged ? "1" : ""}
+
+    if (username) {
+        api_headers["username"] = username
+        
+        // Return error if no password
+        if (!password) {
+            return {
+                "code": 400,
+                "message": "Senha inválida"
+            } as UserError;
+        }
+
+        api_headers["password"] = password
+
+    } else if (token) {
+        api_headers["cookmanager-user-token"] = token
+    
+    // Return error if no data
+    } else {
+        return {
+            "code": 500,
+            "message": "Requisição inválida"
+        } as UserError;
+    }
+
+    console.log(api_headers)
     const res = await fetch(loginEndpoint, {
-        "method": "POST",
-        "headers": {
-            "username": username ? username : '',
-            "password": password ? password : '',
-            "token": token ? token : ''
-        },
+        mode: "cors",
+        method: "POST",
+        headers: api_headers
     })
+
     const user = await res.json()
     return user as User | UserError
 }

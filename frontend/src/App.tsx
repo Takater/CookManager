@@ -1,21 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { ModulesList, loadModulesList, logUser } from './support';
+import { ModulesList, User, UserError, loadModulesList, logUser } from './support';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
 
   const [loading, setLoading] = useState(true);
   const [lista, setLista] = useState<ModulesList>()
 
+  const navigate = useNavigate()
+
   useEffect(() => {
 
-    // Set loading if lista, set lista if loading
+    // If lista
     if(lista) {
-      if (lista.modules.filter(module => module.name == 'E-Commerce').length > 0) {
-        const user_token = localStorage.getItem('cookmanager-user-token')
+
+      const user_token = localStorage.getItem('cookmanager-user-token')
+
+      // Check for e-commerce module
+      if (lista.modules.filter(module => module.name === 'E-Commerce').length > 0) {
+
+        // Log user via token
         if (user_token) {
-          const user = logUser(undefined, undefined, user_token)
+          const user_log = logUser(undefined, undefined, user_token) as unknown as (User | UserError)
+
+          // Successful login via token
+          if (user_log.code === 200) {
+            const user = (user_log as User).user
+            if (user.staff) {
+              // Home
+            } 
+            else {
+              // Logged e-commerce window
+            }
+          } 
+          else {
+            // Log via token Error
+          }
+        }
+        
+        // Not logged
+        else {
+          // Unlogged e-commerce window
+        }
+      }
+
+      // No e-commerce module
+      else {
+
+        // Log user via token
+        if(user_token) {
+          const user_log = logUser(undefined, undefined, user_token) as unknown as (User | UserError)
+
+          if (user_log.code === 200) {
+            const user = (user_log as User).user
+            // Home
+          }
+          else {
+            // Log via token error
+          }
+        }
+        else {
+          navigate('login')
         }
       }
       setLoading(false);
@@ -28,14 +74,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         {loading ? <>Carregando...</> : 
           <>
-            {lista?.modules.map((module => 
-              {
-                return <p key={'módulo' + module.name}>{module.name}</p>
-              }
-            ))}
+            {lista?.modules.map(mod => <p key={"modulo"+mod.id}>{mod.name}</p>)}
           </>
         }
       </header>
