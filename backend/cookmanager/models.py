@@ -30,7 +30,7 @@ class BaseUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=11)
     password = models.CharField(max_length=128)
-    token = models.CharField(max_length=128)
+    token = models.CharField(max_length=128, default=None)
     is_staff = models.BooleanField(default=False)
     permissions = models.ManyToManyField(Permission)
 

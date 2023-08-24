@@ -21,3 +21,10 @@ body {
     font-size: small;
     color:#afaaac
 }
+
+.login-error {
+    font-size: small;
+    color: #E60707;
+    backdrop-filter: drop-shadow(3.75px 7.5px 15px white) brightness(1.125);
+
+}

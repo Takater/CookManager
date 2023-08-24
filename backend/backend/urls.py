@@ -20,6 +20,6 @@ import cookmanager.controller as ctrl
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('stock/', ctrl.stock),
+    path('login/', ctrl.login),
     path('loadmodules/', ctrl.loadmodules)
 ]

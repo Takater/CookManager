@@ -37,7 +37,7 @@ export interface UserError {
     message: string;
 }
 
-export async function logUser(username?: string, password?: string, token?: string, keeplogged?: boolean) {
+export async function logUser(username?: string, password?: string, token?: string, keeplogged?: boolean, setUser?: Function) {
 
     const api_headers = {"username": "", "password": "", "cookmanager-user-token": "", "keep-logged": keeplogged ? "1" : ""}
 
@@ -65,13 +65,12 @@ export async function logUser(username?: string, password?: string, token?: stri
         } as UserError;
     }
 
-    console.log(api_headers)
     const res = await fetch(loginEndpoint, {
-        mode: "cors",
-        method: "POST",
+        method: "GET",
         headers: api_headers
     })
-
     const user = await res.json()
+    
+    setUser && setUser(user)
     return user as User | UserError
 }

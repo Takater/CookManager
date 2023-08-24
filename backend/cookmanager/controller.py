@@ -34,17 +34,15 @@ def login(request):
         Route to login user after 
         validating inserted data
     """
-    if request.method == 'POST':
+    if request.method == 'GET':
         email = request.headers.get('username')
         password = request.headers.get('password')
         token = request.headers.get('cookmanager-user-token')
         keeplogged = request.headers.get('keep-logged')
 
-        print((email, password, token, keeplogged))
-
         if email:
             try:
-                user = BaseUser.objects.get(username=email)
+                user = BaseUser.objects.get(email=email)
                 user_hash = user.password
                 if not validate_pw(password, user_hash):
                     return JsonResponse({
