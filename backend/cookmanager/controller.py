@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import Module, BaseUser
-from .auth import hash_pw, validate_pw
+from .auth import hash_pw, validate_pw, generate_token
 
 def stock(request):
     return JsonResponse({
@@ -50,6 +50,10 @@ def login(request):
                         'message': 'Senha incorreta'
                     })
                 
+                user_token = generate_token(user) if keeplogged else None
+                user.token = user_token
+                user.save()
+                
                 # Validated login
                 return JsonResponse({
                     'code': 200,
@@ -58,7 +62,7 @@ def login(request):
                         'phone': user.phone,
                         'perms': user.permissions,
                         'staff': user.is_staff,
-                        'token': '' if keeplogged else None
+                        'token': user_token
                     }
                 })
                 

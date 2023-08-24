@@ -3,7 +3,7 @@ const baseUrl = "http://localhost:8000/"
 const modulesEndpoint = baseUrl + "loadmodules"
 const loginEndpoint = baseUrl + "login"
 
-// Modules
+// Modules intefaces and functions
 interface Module {
     id: number;
     name: string;
@@ -13,6 +13,7 @@ export interface ModulesList {
     "modules": Array<Module>
 }
 
+// Load hired modules list and set to hook
 export async function loadModulesList (setList: Function) {
     const res = await fetch(modulesEndpoint)
     const data = await res.json()
@@ -20,7 +21,7 @@ export async function loadModulesList (setList: Function) {
     return data
 }
 
-// User
+// User interfaces and functions
 export interface User {
     code: number;
     user: {
@@ -37,6 +38,7 @@ export interface UserError {
     message: string;
 }
 
+// Try to log user according to data
 export async function logUser(username?: string, password?: string, token?: string, keeplogged?: boolean, setUser?: Function) {
 
     const api_headers = {
@@ -46,6 +48,7 @@ export async function logUser(username?: string, password?: string, token?: stri
         "keep-logged": keeplogged ? "1" : ""
     }
 
+    // Login with username and password
     if (username) {
         api_headers["username"] = username
         
@@ -58,7 +61,8 @@ export async function logUser(username?: string, password?: string, token?: stri
         }
 
         api_headers["password"] = password
-
+    
+    // Login with token
     } else if (token) {
         api_headers["cookmanager-user-token"] = token
     
@@ -70,12 +74,18 @@ export async function logUser(username?: string, password?: string, token?: stri
         } as UserError;
     }
 
+    // API call
     const res = await fetch(loginEndpoint, {
         method: "GET",
         headers: api_headers
     })
     const user = await res.json()
+    
+    if (keeplogged && user.code == 200) {
+        localStorage.setItem("cookmanager-user-token", user.user.token)
+    }
 
+    // Set or return user data   
     setUser && setUser(user)
     return user as User | UserError
 }
