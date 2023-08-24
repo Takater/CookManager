@@ -14,7 +14,11 @@ class Module(models.Model):
 
 class Permission(models.Model):
     name = models.CharField(max_length=20)
-    model = models.ForeignKey(Module, on_delete=models.CASCADE)
+    description = models.CharField(max_length=40, default=f"Descrição {name}")
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 class CustomManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -32,7 +36,7 @@ class BaseUser(AbstractBaseUser):
     phone = models.CharField(max_length=11)
     password = models.CharField(max_length=128)
     token = models.CharField(max_length=128, default=None)
-    last_login = models.DateTimeField(default=now())
+    last_login = models.DateTimeField(default=now)
     is_staff = models.BooleanField(default=False)
     permissions = models.ManyToManyField(Permission)
 
