@@ -62,7 +62,7 @@ def login(request):
                         'phone': user.phone,
                         'perms': user.permissions,
                         'staff': user.is_staff,
-                        'token': user_token
+                        'token': user.token
                     }
                 })
                 

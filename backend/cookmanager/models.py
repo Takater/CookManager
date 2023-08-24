@@ -2,6 +2,7 @@ from typing import Any, Optional
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from .auth import hash_pw
+from django.utils.timezone import now
 
 class Module(models.Model):
     name = models.CharField(max_length=20, unique=True)
@@ -31,6 +32,7 @@ class BaseUser(AbstractBaseUser):
     phone = models.CharField(max_length=11)
     password = models.CharField(max_length=128)
     token = models.CharField(max_length=128, default=None)
+    last_login = models.DateTimeField(default=now())
     is_staff = models.BooleanField(default=False)
     permissions = models.ManyToManyField(Permission)
 
@@ -39,8 +41,8 @@ class BaseUser(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
-    def __init__(self):
-        return self
+    def __str__(self):
+        return self.name
     
 class StaffUser(BaseUser):
     staff_id = models.CharField(unique=True, max_length=128)
