@@ -20,6 +20,12 @@ class Permission(models.Model):
     def __str__(self):
         return self.name
 
+class Job(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
 class CustomManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -35,9 +41,10 @@ class BaseUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=11)
     password = models.CharField(max_length=128)
-    token = models.CharField(max_length=128, default=None)
+    token = models.CharField(max_length=128, default=None, blank=True, null=True)
     last_login = models.DateTimeField(default=now)
-    is_staff = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False, name="Colaborador")
+    job = models.CharField(max_length=20, default=None, null=True, blank=True, choices=[(job.name.lower(), job.name.capitalize()) for job in Job.objects.all()])
     permissions = models.ManyToManyField(Permission)
 
     objects = CustomManager()
@@ -48,7 +55,11 @@ class BaseUser(AbstractBaseUser):
     def __str__(self):
         return self.name
     
-class StaffUser(BaseUser):
-    staff_id = models.CharField(unique=True, max_length=128)
-    is_staff = True
+class StaffUser(models.Model):
+    staff_id = models.BigIntegerField(primary_key=True, auto_created=True)
+    base_user = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return f"{self.job.name}_{self.name}"
 

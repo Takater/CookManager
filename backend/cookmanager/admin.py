@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import BaseUser, Module, Permission
+from .models import BaseUser, StaffUser, Job
+from .forms import BaseUserStaff
 
 # Register your models here.
-admin.site.register(BaseUser)
-admin.site.register(Module)
-admin.site.register(Permission)
+admin.site.register(Job)
+admin.site.register(BaseUser, BaseUserStaff)

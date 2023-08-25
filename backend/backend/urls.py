@@ -15,11 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 import cookmanager.controller as ctrl
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('dynamic-admin-form/', include('django_dynamic_admin_forms.urls')),
     path('login/', ctrl.login),
     path('loadmodules/', ctrl.loadmodules)
 ]
