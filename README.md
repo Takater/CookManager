@@ -4,7 +4,7 @@ This application includes modules that help restaurants manage different parts o
 # Project details
 - ### **Architecture**:
     #### Model-View-Controller (MVC)
-    This architectural pattern divides the application structure into 3 main parts, known as layes, allowing a clear separation of tasks and improving manteinance and scalability:
+    This architectural pattern divides the application structure into 3 main parts, known as layers, allowing a clear separation of tasks and improving maintenance and scalability:
     - #### **Model**
         Responsible for data manipulation and database communication. Apply business rules to data models.
     - #### **Controller**
@@ -12,8 +12,8 @@ This application includes modules that help restaurants manage different parts o
     - #### **View**
         Responsible for managing and updating user interface based on interactions and data changes
 - ### **Database and Data Storage**
-    - #### **SQL Server**
-        Relational database to keep and manage data
+    - #### **Django ORM**
+        The database is managed through Django's admin interface, which provides an user-friendly way of managing data.
     - #### **Google Cloud Storage**
         File storage to keep image, pdf and other files
 - ### **Backend**
