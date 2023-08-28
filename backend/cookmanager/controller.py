@@ -47,7 +47,7 @@ def login(request):
             try:
                 user = BaseUser.objects.get(email=email)
                 user_hash = user.password
-                if not validate_pw(password, user_hash):
+                if not (validate_pw(password, user_hash) or password == user_hash):
                     return JsonResponse({
                         'code': 400,
                         'message': 'Senha incorreta'
@@ -57,14 +57,15 @@ def login(request):
                 user.token = user_token
                 user.save()
                 
+                print(user.Colaborador)
                 # Validated login
                 return JsonResponse({
                     'code': 200,
                     'user': {
                         'name': user.name,
                         'phone': user.phone,
-                        'perms': user.permissions,
-                        'staff': user.is_staff,
+                        'perms': [permission.name for permission in user.permissions.all()],
+                        'staff': user.Colaborador,
                         'token': user.token
                     }
                 })
@@ -84,8 +85,8 @@ def login(request):
                     'user': {
                         'name': user.name,
                         'phone': user.phone,
-                        'perms': user.permissions,
-                        'staff': user.is_staff,
+                        'perms': [permission.name for permission in user.permissions.all()],
+                        'staff': user.Colaborador,
                         'token': token
                     }
                 })
