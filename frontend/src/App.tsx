@@ -27,7 +27,7 @@ function App() {
     if(lista) {
 
       // Set list of modules to session storage
-      sessionStorage.setItem('lista-modulos-cookmanager', JSON.stringify(lista.modules))
+      sessionStorage.setItem('cookmanager-modules-list', JSON.stringify(lista.modules))
 
       /* 
         Check for e-commerce module
