@@ -19,6 +19,7 @@ from django.urls import path, include
 import cookmanager.controller as ctrl
 
 urlpatterns = [
+    path('', ctrl.index),
     path('admin/', admin.site.urls),
     path('dynamic-admin-form/', include('django_dynamic_admin_forms.urls')),
     path('login/', ctrl.login),

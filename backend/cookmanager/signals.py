@@ -29,9 +29,9 @@ def create_permissions(sender, **kw):
 def create_jobs(sender, **kw):
     if sender.name == 'cookmanager':
         
-        # Create only when there are none 
+        # Create only when there are none
         if len(Job.objects.all()) == 0:
-            jobs = ['Atendente', 'Garçom', 'Cozinheiro', 'Chef', 'Gerente'] # Initial data
+            jobs = ['Administrador', 'Atendente', 'Cozinheiro', 'Chef', 'Garçom', 'Gerente'] # Initial data
             for job in jobs:
                 Job.objects.get_or_create(name=job)
 
@@ -39,5 +39,5 @@ def create_jobs(sender, **kw):
 @receiver(post_save, sender=BaseUser)
 def create_staff_user(sender, instance, created, **kw):
     if created and instance.Colaborador:
-        job = instance.job
+        job = Job.objects.get(name=str(instance.job).capitalize())
         StaffUser.objects.create(base_user=instance, job=job)

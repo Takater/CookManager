@@ -1,7 +1,10 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Module, BaseUser
-from .auth import hash_pw, validate_pw, generate_token
+from .auth import validate_pw, generate_token
+
+def index(request):
+    return redirect('/admin')
 
 def stock(request):
     return JsonResponse({
