@@ -57,7 +57,6 @@ def login(request):
                 user.token = user_token
                 user.save()
                 
-                print(user.Colaborador)
                 # Validated login
                 return JsonResponse({
                     'code': 200,

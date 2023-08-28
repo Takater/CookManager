@@ -7,61 +7,57 @@ function App() {
 
   const [loading, setLoading] = useState(true);
   const [lista, setLista] = useState<ModulesList>()
+  const [userData, setUserData] = useState<User | UserError>()
 
   const navigate = useNavigate()
 
+  const loadUser = () => {
+    const user_token = localStorage.getItem('cookmanager-user-token')
+
+    // Log user via token
+    if (user_token) {
+      logUser(undefined, undefined, user_token, undefined, setUserData)
+    }
+  }
   useEffect(() => {
+
+    loadUser()
 
     // If lista
     if(lista) {
 
-      const user_token = localStorage.getItem('cookmanager-user-token')
+      // Set list of modules to session storage
+      sessionStorage.setItem('lista-modulos-cookmanager', JSON.stringify(lista.modules))
 
-      // Check for e-commerce module
+      /* 
+        Check for e-commerce module
+        If staff, take to home. If client, take to shop.
+      */
       if (lista.modules.filter(module => module.name === 'E-Commerce').length > 0) {
+        if (userData?.code === 200) {
+          
+          // Set user data to session storage
+          sessionStorage.setItem('cookmanager-user-data', JSON.stringify((userData as User).user))
 
-        // Log user via token
-        if (user_token) {
-          const user_log = logUser(undefined, undefined, user_token) as unknown as (User | UserError)
-
-          // Successful login via token
-          if (user_log.code === 200) {
-            const user = (user_log as User).user
-            if (user.staff) {
-              // Home
-            } 
-            else {
-              // Logged e-commerce window
-            }
-          } 
-          else {
-            // Log via token Error
+          if ((userData as User).user.staff) {
+            navigate('/home')
+          } else {
+            navigate('/shop')
           }
         }
-        
-        // Not logged
-        else {
-          // Unlogged e-commerce window
-        }
-      }
 
-      // No e-commerce module
-      else {
+      /*
+        No e-commerce module means no client user
+        Take to home or back to login
+      */
+      } else {
+        if (userData?.code === 200) {
 
-        // Log user via token
-        if(user_token) {
-          const user_log = logUser(undefined, undefined, user_token) as unknown as (User | UserError)
-
-          if (user_log.code === 200) {
-            const user = (user_log as User).user
-            // Home
-          }
-          else {
-            // Log via token error
-          }
-        }
-        else {
-          navigate('login')
+          // Set user data to session storage
+          sessionStorage.setItem('cookmanager-user-data', JSON.stringify((userData as User).user))
+          navigate('/home')
+        } else {
+          navigate('/login')
         }
       }
       setLoading(false);
@@ -74,11 +70,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {loading ? <>Carregando...</> : 
-          <>
-            {lista?.modules.map(mod => <p key={"modulo"+mod.id}>{mod.name}</p>)}
-          </>
-        }
+        {loading && <>Carregando...</>}
       </header>
     </div>
   );

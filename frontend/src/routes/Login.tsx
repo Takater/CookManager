@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import "../css/login.css"
 import { User, UserError, logUser } from "../support"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 
 export default function Login () {
 
@@ -24,7 +24,7 @@ export default function Login () {
         
         if(logged) {
             setLoading(false)
-            logged.code === 200 ? navigate('home') : document.getElementById("loginsubmit")?.addEventListener('click', handleLogin);
+            logged.code === 200 ? localStorage.setItem("cookmanager-user-token", (logged as User).user.token) : document.getElementById("loginsubmit")?.addEventListener('click', handleLogin);
         }
         document.getElementById("loginsubmit")?.addEventListener('click', handleLogin);
 
@@ -52,6 +52,7 @@ export default function Login () {
                     <label htmlFor="keeplogged" className="form-check-label">Manter conectado</label>
                 </div>
                 
+                {logged?.code == 200 && <Navigate to="/" replace={true} />}
                 <button id="loginsubmit" type="button" className="btn btn-success mt-5">Entrar</button>
             </form>
         </>
