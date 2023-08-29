@@ -81,11 +81,15 @@ export async function logUser(username?: string, password?: string, token?: stri
     })
     const user = await res.json()
     
-    if (keeplogged && user.code == 200) {
+    if (keeplogged && user.code === 200) {
         localStorage.setItem("cookmanager-user-token", user.user.token)
     }
 
     // Set or return user data   
     setUser && setUser(user)
     return user as User | UserError
+}
+
+export function normalizeName(name: string) {
+    return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
 }

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react"
 import "../css/login.css"
 import { User, UserError, logUser } from "../support"
-import { Navigate, useNavigate } from "react-router-dom"
+import { Navigate, redirect } from "react-router-dom"
 
 export default function Login () {
-
-    const navigate = useNavigate()
 
     const [logged, setLogged] = useState<User | UserError>()
     const [loading, setLoading] = useState(false)
@@ -24,7 +22,14 @@ export default function Login () {
         
         if(logged) {
             setLoading(false)
-            logged.code === 200 ? localStorage.setItem("cookmanager-user-token", (logged as User).user.token) : document.getElementById("loginsubmit")?.addEventListener('click', handleLogin);
+            if (logged.code === 200) {
+                const logged_user = (logged as User).user
+                logged_user.token ? localStorage.setItem("cookmanager-user-token", logged_user.token) : sessionStorage.setItem("cookmanager-user-data", JSON.stringify(logged_user))
+                console.log(logged_user)
+                redirect("/")
+            } else {
+                document.getElementById("loginsubmit")?.addEventListener('click', handleLogin);
+            }
         }
         document.getElementById("loginsubmit")?.addEventListener('click', handleLogin);
 
@@ -52,7 +57,7 @@ export default function Login () {
                     <label htmlFor="keeplogged" className="form-check-label">Manter conectado</label>
                 </div>
                 
-                {logged?.code == 200 && <Navigate to="/" replace={true} />}
+                {logged?.code === 200 && <Navigate to="/" replace={true} />}
                 <button id="loginsubmit" type="button" className="btn btn-success mt-5">Entrar</button>
             </form>
         </>

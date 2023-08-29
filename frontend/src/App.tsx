@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import { ModulesList, User, UserError, loadModulesList, logUser } from './support';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import { ModulesList, User, UserError, loadModulesList, logUser } from "./support";
+import { useNavigate } from "react-router-dom";
 
 function App() {
 
@@ -12,12 +12,18 @@ function App() {
   const navigate = useNavigate()
 
   const loadUser = () => {
-    const user_token = localStorage.getItem('cookmanager-user-token')
+    const user_token = localStorage.getItem("cookmanager-user-token")
+    const user_data = sessionStorage.getItem("cookmanager-user-data")
+
+    if (user_data) {
+      const isStaff = (JSON.parse(user_data) as User["user"]).staff
+      navigate(isStaff ? "/home" : "/shop")
+    }
 
     // Log user via token
     if (user_token) {
       logUser(undefined, undefined, user_token, undefined, setUserData)
-    }
+    } 
   }
   useEffect(() => {
 
@@ -27,23 +33,25 @@ function App() {
     if(lista) {
 
       // Set list of modules to session storage
-      sessionStorage.setItem('cookmanager-modules-list', JSON.stringify(lista.modules))
+      sessionStorage.setItem("cookmanager-modules-list", JSON.stringify(lista.modules))
 
       /* 
         Check for e-commerce module
         If staff, take to home. If client, take to shop.
       */
-      if (lista.modules.filter(module => module.name === 'E-Commerce').length > 0) {
+      if (lista.modules.filter(module => module.name === "E-Commerce").length > 0) {
         if (userData?.code === 200) {
           
           // Set user data to session storage
-          sessionStorage.setItem('cookmanager-user-data', JSON.stringify((userData as User).user))
+          sessionStorage.setItem("cookmanager-user-data", JSON.stringify((userData as User).user))
 
           if ((userData as User).user.staff) {
-            navigate('/home')
+            navigate("/home")
           } else {
-            navigate('/shop')
+            navigate("/shop")
           }
+        } else {
+          navigate("/login")
         }
 
       /*
@@ -54,10 +62,10 @@ function App() {
         if (userData?.code === 200) {
 
           // Set user data to session storage
-          sessionStorage.setItem('cookmanager-user-data', JSON.stringify((userData as User).user))
-          navigate('/home')
+          sessionStorage.setItem("cookmanager-user-data", JSON.stringify((userData as User).user))
+          navigate("/home")
         } else {
-          navigate('/login')
+          navigate("/login")
         }
       }
       setLoading(false);
